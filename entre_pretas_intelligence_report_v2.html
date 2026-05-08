@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Entre Pretas Intelligence Report</title>
+<style>
+  :root{
+    --bg:#17110f;
+    --surface:#231917;
+    --paper:#fff8ef;
+    --paper-2:#f5eadc;
+    --cream:#fffaf3;
+    --ink:#241813;
+    --muted:#806f63;
+    --soft:#b79f8d;
+    --line:rgba(90,56,40,.16);
+    --line-dark:rgba(255,248,239,.14);
+    --cacao:#4c2d24;
+    --cacao-2:#2e1a16;
+    --copper:#b46b4f;
+    --rose:#d5a08f;
+    --wine:#5b2330;
+    --plum:#392131;
+    --sand:#e6d0ba;
+    --olive:#73765c;
+    --gold:#c79a5a;
+    --glow:0 34px 90px rgba(46,26,22,.18);
+    --shadow:0 18px 60px rgba(44,25,17,.10);
+    --radius:30px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 12% 2%, rgba(180,107,79,.24), transparent 28vw),
+      radial-gradient(circle at 95% 8%, rgba(91,35,48,.30), transparent 30vw),
+      linear-gradient(180deg,#17110f 0,#201512 420px,#f8efe4 421px,#fbf3e9 100%);
+    color:var(--ink);
+    font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height:1.45;
+  }
+  body:before{
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:.14;z-index:0;
+    background-image:linear-gradient(rgba(255,248,239,.7) 1px, transparent 1px),linear-gradient(90deg,rgba(255,248,239,.7) 1px, transparent 1px);
+    background-size:72px 72px;mask-image:linear-gradient(180deg,#000 0, transparent 55%);
+  }
+  .wrap{position:relative;z-index:1;max-width:1240px;margin:auto;padding:34px 24px 86px}
+  .topbar{position:sticky;top:14px;z-index:20;display:flex;gap:12px;justify-content:space-between;align-items:center;margin-bottom:28px;padding:10px;border:1px solid var(--line-dark);border-radius:999px;background:rgba(35,25,23,.72);backdrop-filter:blur(18px);box-shadow:0 18px 60px rgba(0,0,0,.20)}
+  .brand{display:flex;align-items:center;gap:12px;color:#fff8ef;font-weight:850;letter-spacing:.02em;padding-left:10px}
+  .mark{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--rose),var(--copper));color:#241813;font-family:Georgia,serif;font-size:20px;box-shadow:0 0 0 6px rgba(213,160,143,.12)}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .tab-btn{appearance:none;border:1px solid rgba(255,248,239,.18);background:rgba(255,248,239,.08);color:#eadccc;border-radius:999px;padding:11px 16px;font-weight:850;cursor:pointer;transition:.22s ease;font-size:13px}
+  .tab-btn:hover{transform:translateY(-1px);background:rgba(255,248,239,.14)}
+  .tab-btn.active{background:#fff8ef;border-color:#fff8ef;color:var(--cacao-2)}
+  .tab-panel{display:none;animation:rise .45s ease both}
+  .tab-panel.active{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .hero{display:grid;grid-template-columns:1.25fr .75fr;gap:22px;align-items:stretch;margin-bottom:22px}
+  .card{position:relative;background:linear-gradient(180deg,rgba(255,250,243,.96),rgba(255,248,239,.91));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px;overflow:hidden}
+  .card:after{content:"";position:absolute;inset:auto -80px -110px auto;width:210px;height:210px;border-radius:50%;background:radial-gradient(circle, rgba(180,107,79,.14), transparent 66%);pointer-events:none}
+  .hero .card:first-child{padding:48px;min-height:410px;background:
+    radial-gradient(circle at 88% 20%, rgba(199,154,90,.18), transparent 28%),
+    linear-gradient(145deg,#fff8ef 0,#f8eadb 100%);}
+  .hero .card:first-child:before{content:"";position:absolute;right:36px;top:34px;width:164px;height:164px;border-radius:50%;background:conic-gradient(from 110deg, transparent 0 20%, rgba(91,35,48,.18) 20% 38%, transparent 38% 48%, rgba(180,107,79,.30) 48% 72%, transparent 72%);filter:blur(.1px)}
+  .eyebrow{position:relative;z-index:1;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--copper);font-weight:900;margin-bottom:18px}
+  .title{position:relative;z-index:1;font-family:Georgia, 'Times New Roman', serif;font-weight:500;font-size:clamp(42px,6.5vw,84px);line-height:.88;letter-spacing:-.055em;margin:0 0 22px;color:var(--cacao-2)}
+  .subtitle{position:relative;z-index:1;font-size:18px;color:#756052;max-width:760px;margin:0}
+  .meta{position:relative;z-index:1;display:flex;gap:10px;flex-wrap:wrap;margin-top:30px}
+  .pill{border:1px solid rgba(90,56,40,.16);background:rgba(255,255,255,.52);border-radius:999px;padding:9px 13px;font-size:12px;color:#6e5b50;font-weight:700}
+  .kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .kpi{position:relative;border:1px solid var(--line);background:linear-gradient(180deg,#fffdf9,#f7ecdf);border-radius:24px;padding:20px;min-height:132px;display:flex;flex-direction:column;justify-content:space-between}
+  .kpi b{display:block;font-family:Georgia,serif;font-size:39px;line-height:1;color:var(--cacao);font-weight:500;letter-spacing:-.04em}
+  .kpi span{display:block;margin-top:10px;color:var(--muted);font-size:13px;font-weight:680}
+  .section{margin-top:30px}
+  .section-head{display:grid;grid-template-columns:.72fr 1fr;gap:28px;align-items:end;margin:52px 0 18px}
+  .section h2{font-family:Georgia,serif;font-size:clamp(30px,3.2vw,46px);line-height:.98;letter-spacing:-.035em;font-weight:500;margin:0;color:var(--cacao-2)}
+  .section p.lead{color:#7d6b60;margin:0;max-width:720px;font-size:16px}
+  .section-head h2:before{content:"";display:block;width:42px;height:4px;border-radius:999px;background:linear-gradient(90deg,var(--copper),var(--gold));margin-bottom:14px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  h3{font-size:18px;margin:0 0 14px;color:var(--cacao-2)}
+  .insight{position:relative;padding:26px;border-radius:26px;background:linear-gradient(180deg,#fffaf3,#f8eddf);border:1px solid var(--line);box-shadow:0 12px 38px rgba(44,25,17,.06)}
+  .insight:before{content:"";display:block;width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,var(--copper),var(--rose));margin-bottom:18px;box-shadow:22px 0 0 rgba(180,107,79,.16)}
+  .insight h3{margin:0 0 8px;font-size:19px}
+  .insight p{margin:0;color:var(--muted)}
+  .bar-chart{display:grid;gap:14px}
+  .bar-row{display:grid;grid-template-columns:150px 1fr 72px;gap:12px;align-items:center;font-size:14px}
+  .bar-label{color:#6f5f55;font-weight:750}
+  .track{height:13px;background:#eadccf;border-radius:999px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(90,56,40,.05)}
+  .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--wine),var(--copper),var(--gold));box-shadow:10px 0 26px rgba(180,107,79,.22)}
+  .value{text-align:right;color:var(--cacao);font-weight:850}
+  .note{font-size:12px;color:#87756a;margin-top:14px}
+  .donuts{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .donut-card{border:1px solid var(--line);border-radius:28px;padding:22px;background:linear-gradient(180deg,#fffaf4,#f6eadb);text-align:center}
+  .donut{width:142px;height:142px;border-radius:50%;margin:0 auto 16px;background:conic-gradient(var(--wine) 0 calc(var(--p) * .42), var(--copper) calc(var(--p) * .42) var(--p), #eadccf 0);display:grid;place-items:center;box-shadow:inset 0 0 0 1px rgba(90,56,40,.05)}
+  .donut::after{content:attr(data-label);width:92px;height:92px;background:#fff8ef;border-radius:50%;display:grid;place-items:center;font-weight:900;color:var(--cacao);font-size:21px;box-shadow:0 8px 24px rgba(44,25,17,.06)}
+  .donut-card h4{margin:0 0 4px;color:var(--cacao-2)}
+  .donut-card p{margin:0;color:var(--muted);font-size:13px}
+  .themes{display:grid;gap:12px}
+  .theme{display:grid;grid-template-columns:230px 1fr 72px;gap:12px;align-items:center}
+  .theme .track{height:20px}
+  .theme:nth-child(even) .fill{background:linear-gradient(90deg,var(--cacao),var(--rose))}
+  .diagram{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .step{position:relative;background:linear-gradient(180deg,#fffaf4,#f6eadb);border:1px solid var(--line);border-radius:28px;padding:24px;min-height:168px;box-shadow:0 14px 40px rgba(44,25,17,.05)}
+  .step small{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--cacao),var(--wine));color:white;font-weight:900;margin-bottom:16px}
+  .step p{margin:0;color:var(--muted);font-size:14px}
+  .matrix{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .persona{background:linear-gradient(145deg,#fffaf4,#f5e6d7);border:1px solid var(--line);border-radius:28px;padding:24px;box-shadow:0 14px 40px rgba(44,25,17,.05)}
+  .persona h3{margin:0 0 10px}
+  .persona ul,.model ul{margin:0;padding-left:18px;color:var(--muted)}
+  .quote{font-family:Georgia,serif;font-size:30px;line-height:1.14;color:var(--wine);margin:0;letter-spacing:-.025em}
+  .small{font-size:13px;color:var(--muted)}
+  .vol-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px}
+  .footer{margin-top:42px;padding:22px 0 0;border-top:1px solid rgba(90,56,40,.14);color:#806f63;font-size:13px}
+  .tag-cloud{display:flex;flex-wrap:wrap;gap:10px}
+  .tag{padding:9px 13px;border-radius:999px;background:#fffaf4;border:1px solid var(--line);color:var(--cacao);font-weight:800}
+  .tag.big{font-size:18px;background:var(--cacao);color:#fff8ef;border-color:var(--cacao)}.tag.mid{font-size:15px;background:#f0decd}
+  .recommendations{counter-reset:rec}
+  .rec{display:grid;grid-template-columns:48px 1fr;gap:14px;align-items:start}
+  .rec:before{counter-increment:rec;content:counter(rec);display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--sand),var(--gold));color:var(--cacao);font-weight:950}
+  .rec + .rec{margin-top:20px;padding-top:20px;border-top:1px solid rgba(90,56,40,.10)}
+  .rec h3{margin:0 0 5px}.rec p{margin:0;color:var(--muted)}
+
+  .source-list{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+  .source-list a{display:block;text-decoration:none;color:var(--cacao);background:#fffaf4;border:1px solid var(--line);border-radius:18px;padding:14px;font-size:13px;font-weight:800;transition:.2s ease}
+  .source-list a:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(44,25,17,.08)}
+  .market-map{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .market-card{position:relative;background:linear-gradient(180deg,#fffaf4,#f5e7d8);border:1px solid var(--line);border-radius:28px;padding:22px;min-height:205px;overflow:hidden}
+  .market-card:before{content:"";position:absolute;right:18px;top:18px;width:34px;height:34px;border-radius:50%;background:rgba(180,107,79,.14)}
+  .market-card small{display:inline-block;margin-bottom:12px;color:var(--copper);font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:950}
+  .market-card h3{margin:0 0 8px;font-size:18px}.market-card p{margin:0;color:var(--muted);font-size:14px}
+  .benchmark-table{display:grid;gap:10px}
+  .bench-row{display:grid;grid-template-columns:1.1fr 1.1fr 1.1fr 1fr;gap:10px;align-items:stretch}
+  .bench-row > div{border:1px solid var(--line);background:linear-gradient(180deg,#fffaf4,#f7eadc);border-radius:20px;padding:15px;font-size:13px;color:var(--muted)}
+  .bench-row.head > div{background:linear-gradient(135deg,var(--cacao),var(--wine));color:#fff8ef;font-weight:950;border-color:transparent}
+  .bench-row b{display:block;color:var(--cacao-2);margin-bottom:5px}.bench-row.head b{color:white}
+  .axis-map{position:relative;min-height:540px;background:
+    linear-gradient(90deg,rgba(90,56,40,.10) 1px,transparent 1px),linear-gradient(0deg,rgba(90,56,40,.10) 1px,transparent 1px),
+    radial-gradient(circle at 58% 49%, rgba(180,107,79,.18), transparent 24%),#fffaf4;
+    background-size:25% 100%,100% 25%,100% 100%;border:1px solid var(--line);border-radius:32px;padding:24px;overflow:hidden}
+  .axis-map:before{content:"Território ideal";position:absolute;left:48%;top:39%;width:180px;height:180px;border-radius:50%;display:grid;place-items:start center;padding-top:22px;border:1px dashed rgba(91,35,48,.32);color:rgba(91,35,48,.64);font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.12em;background:rgba(213,160,143,.10)}
+  .axis-label{position:absolute;font-size:11px;color:#826f63;font-weight:950;text-transform:uppercase;letter-spacing:.12em}.axis-label.top{top:16px;left:50%;transform:translateX(-50%)}.axis-label.bottom{bottom:16px;left:50%;transform:translateX(-50%)}.axis-label.left{left:-24px;top:50%;transform:rotate(-90deg) translateX(-50%);transform-origin:left center}.axis-label.right{right:-34px;top:50%;transform:rotate(90deg) translateX(50%);transform-origin:right center}
+  .dot{position:absolute;transform:translate(-50%,-50%);max-width:194px;border:1px solid rgba(90,56,40,.14);background:rgba(255,248,239,.94);box-shadow:0 16px 36px rgba(44,25,17,.11);border-radius:20px;padding:13px}
+  .dot b{display:block;color:var(--cacao);font-size:14px}.dot span{display:block;color:var(--muted);font-size:12px;margin-top:4px}.dot.prime{background:linear-gradient(135deg,var(--cacao),var(--wine));color:white;border-color:transparent;box-shadow:0 22px 48px rgba(91,35,48,.28)}.dot.prime b,.dot.prime span{color:white}
+  .model-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .model{position:relative;border:1px solid var(--line);border-radius:30px;background:linear-gradient(180deg,#fffaf4,#f5e6d8);padding:24px;overflow:hidden}
+  .model:before{content:"";display:block;width:34px;height:4px;background:linear-gradient(90deg,var(--wine),var(--copper));border-radius:999px;margin-bottom:18px}
+  .model .price{font-family:Georgia,serif;font-size:32px;color:var(--wine);line-height:1;margin:10px 0;letter-spacing:-.04em}
+  .funnel{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .funnel-step{position:relative;border:1px solid var(--line);background:linear-gradient(180deg,#fffaf4,#f6eadb);border-radius:22px;padding:20px;text-align:center}
+  .funnel-step:not(:last-child):after{content:"→";position:absolute;right:-13px;top:50%;transform:translateY(-50%);color:var(--copper);font-weight:900;z-index:2}
+  .funnel-step b{display:block;font-family:Georgia,serif;color:var(--wine);font-size:24px}.funnel-step span{display:block;color:var(--muted);font-size:13px;margin-top:8px}
+  .canvas-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .canvas-card{border:1px solid var(--line);background:linear-gradient(180deg,#fffaf4,#f6eadb);border-radius:24px;padding:19px}.canvas-card h3{margin:0 0 8px;font-size:16px}.canvas-card p{margin:0;color:var(--muted);font-size:14px}
+
+  .manifesto{margin:28px 0;padding:34px 40px;border-radius:34px;background:linear-gradient(135deg,var(--cacao),var(--wine));color:#fff8ef;box-shadow:0 28px 80px rgba(46,26,22,.22);display:grid;grid-template-columns:1fr .38fr;gap:24px;align-items:end}
+  .manifesto p{font-family:Georgia,serif;font-size:clamp(25px,3vw,42px);line-height:1.05;letter-spacing:-.035em;margin:0}
+  .manifesto span{color:#ead8c6;font-size:13px;text-transform:uppercase;letter-spacing:.16em;font-weight:900}
+
+  @media(max-width:980px){
+    .wrap{padding:18px 14px 70px}.topbar{position:relative;top:0;border-radius:26px;align-items:flex-start;flex-direction:column}.tabs{justify-content:flex-start}
+    .hero,.grid-2,.grid-3,.vol-grid,.diagram,.matrix,.market-map,.model-grid,.funnel,.canvas-grid,.source-list{grid-template-columns:1fr}
+    .bench-row{grid-template-columns:1fr}.axis-map{min-height:650px}.donuts{grid-template-columns:1fr}.bar-row,.theme{grid-template-columns:1fr}.value{text-align:left}
+    .card,.hero .card:first-child{padding:24px}.section-head{grid-template-columns:1fr;gap:10px}.title{font-size:46px}.manifesto{grid-template-columns:1fr;padding:26px}.funnel-step:not(:last-child):after{display:none}
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="topbar">
+    <div class="brand"><div class="mark">•</div><div>Entre Pretas · Intelligence Report</div></div>
+    <nav class="tabs" aria-label="Navegação do relatório">
+      <button class="tab-btn active" data-tab="pesquisa">Dados da pesquisa</button>
+      <button class="tab-btn" data-tab="mercado">Mercado & benchmark</button>
+    </nav>
+  </div>
+  <div id="tab-pesquisa" class="tab-panel active">
+  <section class="manifesto"><p>Comunidade não é só audiência. É vínculo, espelho, repertório e circulação de valor.</p><span>Leitura estratégica dos dados</span></section>
+  
+  <section class="hero">
+    <div class="card">
+      <div class="eyebrow">Análise de pesquisa · Comunidade Entre Pretas</div>
+      <h1 class="title">Quem é, o que busca e como chega o público da comunidade</h1>
+      <p class="subtitle">Leitura sucinta dos formulários de entrada e voluntariado, com foco em comportamento, desejos declarados e oportunidades de fortalecimento da comunidade.</p>
+      <div class="meta">
+        <span class="pill">Base principal: 5.075 respostas</span><span class="pill">Voluntárias: 66 respostas</span><span class="pill">Período: 09/03/2025 a 07/05/2026</span><span class="pill">Duplicidade baixa: 26 e-mails repetidos</span>
+      </div>
+    </div>
+    <div class="card kpis">
+      <div class="kpi"><b>50,9%</b><span>têm entre 25 e 34 anos</span></div>
+      <div class="kpi"><b>74,2%</b><span>estão em SP capital + região metropolitana</span></div>
+      <div class="kpi"><b>89,0%</b><span>chegam por Instagram ou TikTok</span></div>
+      <div class="kpi"><b>99,9%</b><span>declaram ser mulheres pretas/pardas ou negras</span></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>1. Retrato do público</h2><p class="lead">A comunidade atrai majoritariamente mulheres negras jovens-adultas, urbanas, com forte concentração em São Paulo, mas já com alcance nacional relevante.</p></div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>Faixa etária</h3>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">25 a 34</div><div class="track"><div class="fill" style="width:50.9%"></div></div><div class="value">50,9%</div></div>
+          <div class="bar-row"><div class="bar-label">35 a 44</div><div class="track"><div class="fill" style="width:21.9%"></div></div><div class="value">21,9%</div></div>
+          <div class="bar-row"><div class="bar-label">19 a 24</div><div class="track"><div class="fill" style="width:20.1%"></div></div><div class="value">20,1%</div></div>
+          <div class="bar-row"><div class="bar-label">45 a 54</div><div class="track"><div class="fill" style="width:5.2%"></div></div><div class="value">5,2%</div></div>
+          <div class="bar-row"><div class="bar-label">Até 18 / 55+</div><div class="track"><div class="fill" style="width:1.9%"></div></div><div class="value">1,9%</div></div>
+        </div>
+        <p class="note">Leitura: o coração da comunidade está em mulheres entre 25 e 44 anos, fase de construção de identidade, carreira, vínculos e autonomia.</p>
+      </div>
+      <div class="card">
+        <h3>Localização</h3>
+        <div class="bar-chart">
+          <div class="bar-row"><div class="bar-label">São Paulo capital</div><div class="track"><div class="fill" style="width:56.8%"></div></div><div class="value">56,8%</div></div>
+          <div class="bar-row"><div class="bar-label">Outros estados</div><div class="track"><div class="fill" style="width:18.2%"></div></div><div class="value">18,2%</div></div>
+          <div class="bar-row"><div class="bar-label">Grande SP</div><div class="track"><div class="fill" style="width:17.4%"></div></div><div class="value">17,4%</div></div>
+          <div class="bar-row"><div class="bar-label">Interior de SP</div><div class="track"><div class="fill" style="width:7.6%"></div></div><div class="value">7,6%</div></div>
+        </div>
+        <p class="note">Entre quem está fora de São Paulo, o Sudeste lidera, seguido por Sul, Centro-Oeste, Norte e Nordeste.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>2. Canais de aquisição</h2><p class="lead">O crescimento é essencialmente social-first. Instagram e TikTok funcionam como porta de entrada emocional e comunitária.</p></div>
+    <div class="card">
+      <div class="donuts">
+        <div class="donut-card"><div class="donut" style="--p:56.6%" data-label="56,6%"></div><h4>Instagram</h4><p>principal canal de descoberta</p></div>
+        <div class="donut-card"><div class="donut" style="--p:32.4%" data-label="32,4%"></div><h4>TikTok</h4><p>canal de alcance e identificação</p></div>
+        <div class="donut-card"><div class="donut" style="--p:9.7%" data-label="9,7%"></div><h4>Indicação</h4><p>sinal de confiança orgânica</p></div>
+      </div>
+      <p class="note">Implicação: a jornada ideal combina conteúdo de identificação, prova social, convites claros para grupos/encontros e incentivo estruturado à indicação.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>3. O que elas esperam encontrar</h2><p class="lead">A demanda principal não é apenas por eventos. É por vínculo, reconhecimento e troca entre mulheres que compartilham vivências semelhantes.</p></div>
+    <div class="grid-2">
+      <div class="card themes">
+        <div class="theme"><div class="bar-label">Amizades e rede</div><div class="track"><div class="fill" style="width:45.7%"></div></div><div class="value">2.316</div></div>
+        <div class="theme"><div class="bar-label">Acolhimento e pertencimento</div><div class="track"><div class="fill" style="width:39.6%"></div></div><div class="value">2.006</div></div>
+        <div class="theme"><div class="bar-label">Troca de experiências</div><div class="track"><div class="fill" style="width:35.6%"></div></div><div class="value">1.806</div></div>
+        <div class="theme"><div class="bar-label">Aprendizado</div><div class="track"><div class="fill" style="width:14.5%"></div></div><div class="value">735</div></div>
+        <div class="theme"><div class="bar-label">Cultura e debates</div><div class="track"><div class="fill" style="width:5.5%"></div></div><div class="value">279</div></div>
+        <div class="theme"><div class="bar-label">Carreira e negócios</div><div class="track"><div class="fill" style="width:4.8%"></div></div><div class="value">245</div></div>
+      </div>
+      <div class="card">
+        <p class="quote">“A comunidade é percebida como um lugar para deixar de ser exceção e passar a se reconhecer em rede.”</p>
+        <div class="tag-cloud" style="margin-top:24px">
+          <span class="tag big">amizade</span><span class="tag big">acolhimento</span><span class="tag big">pertencimento</span><span class="tag mid">troca</span><span class="tag mid">representatividade</span><span class="tag">aprendizado</span><span class="tag">autoestima</span><span class="tag">eventos</span><span class="tag">carreira</span>
+        </div>
+        <p class="note">As respostas abertas foram classificadas por temas recorrentes; uma mesma resposta pode aparecer em mais de um tema.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>4. Quatro perfis de público</h2><p class="lead">Os dados sugerem perfis complementares. A comunicação e a programação podem alternar entre essas motivações.</p></div>
+    <div class="matrix">
+      <div class="persona"><h3>A que busca pertencimento</h3><ul><li>Quer acolhimento e identificação.</li><li>Valoriza segurança emocional.</li><li>Responde bem a narrativas reais.</li></ul></div>
+      <div class="persona"><h3>A que busca amizade</h3><ul><li>Quer criar laços e sair do isolamento.</li><li>Valoriza encontros leves e recorrentes.</li><li>Precisa de rituais de integração.</li></ul></div>
+      <div class="persona"><h3>A que busca crescimento</h3><ul><li>Quer aprender, trocar repertório e evoluir.</li><li>Abre espaço para mentorias, rodas e workshops.</li><li>Pode ativar carreira, negócios e autoestima.</li></ul></div>
+      <div class="persona"><h3>A que quer contribuir</h3><ul><li>Quer participar dos bastidores.</li><li>Tem energia para eventos, grupos e parcerias.</li><li>Pode virar força operacional da comunidade.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>5. Jornada recomendada</h2><p class="lead">Para sustentar crescimento sem perder acolhimento, a comunidade precisa transformar descoberta em vínculo e vínculo em participação.</p></div>
+    <div class="diagram">
+      <div class="step"><small>1</small><h3>Descoberta</h3><p>Conteúdos de identificação no Instagram e TikTok, com mensagens simples: “você não está sozinha”.</p></div>
+      <div class="step"><small>2</small><h3>Entrada</h3><p>Onboarding com regras, boas-vindas e caminhos claros: grupos, agenda, canais e como participar.</p></div>
+      <div class="step"><small>3</small><h3>Vínculo</h3><p>Rituais recorrentes de conversa, apresentação, encontros e temas que incentivem troca real.</p></div>
+      <div class="step"><small>4</small><h3>Ativação</h3><p>Convites para voluntariado, indicações, parcerias, produção de conteúdo e embaixadoras locais.</p></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>6. Potencial do voluntariado</h2><p class="lead">A base de voluntárias tem alta disponibilidade para eventos presenciais e forte vontade de apoiar produção, parcerias e organização.</p></div>
+    <div class="vol-grid">
+      <div class="card">
+        <div class="kpis" style="grid-template-columns:repeat(2,1fr)">
+          <div class="kpi"><b>66</b><span>voluntárias cadastradas</span></div>
+          <div class="kpi"><b>31,8</b><span>idade média declarada</span></div>
+          <div class="kpi"><b>72,7%</b><span>podem participar presencialmente</span></div>
+          <div class="kpi"><b>77,3%</b><span>querem divulgar trabalho/profissão</span></div>
+        </div>
+      </div>
+      <div class="card bar-chart">
+        <h3>Áreas com maior oferta de apoio</h3>
+        <div class="bar-row"><div class="bar-label">Produção de eventos</div><div class="track"><div class="fill" style="width:83.3%"></div></div><div class="value">55</div></div>
+        <div class="bar-row"><div class="bar-label">Marcas/parcerias</div><div class="track"><div class="fill" style="width:48.5%"></div></div><div class="value">32</div></div>
+        <div class="bar-row"><div class="bar-label">Grupos WhatsApp</div><div class="track"><div class="fill" style="width:42.4%"></div></div><div class="value">28</div></div>
+        <div class="bar-row"><div class="bar-label">Locais para eventos</div><div class="track"><div class="fill" style="width:34.8%"></div></div><div class="value">23</div></div>
+        <div class="bar-row"><div class="bar-label">Comercial</div><div class="track"><div class="fill" style="width:34.8%"></div></div><div class="value">23</div></div>
+        <div class="bar-row"><div class="bar-label">LinkedIn</div><div class="track"><div class="fill" style="width:25.8%"></div></div><div class="value">17</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>7. Recomendações práticas</h2><p class="lead">Próximas ações para transformar dados em comunidade mais forte, organizada e escalável.</p></div>
+    <div class="card recommendations">
+      <div class="rec"><div><h3>Organizar programação por pilares</h3><p>Amizade, acolhimento, desenvolvimento, cultura, carreira e beleza/autoestima. Isso traduz os desejos declarados em uma agenda clara.</p></div></div>
+      <div class="rec"><div><h3>Criar onboarding de pertencimento</h3><p>Enviar boas-vindas com manifesto, regras, agenda, mapa dos grupos e primeira ação recomendada para quebrar o gelo.</p></div></div>
+      <div class="rec"><div><h3>Transformar voluntárias em squads</h3><p>Separar por eventos, parcerias, WhatsApp, comercial e conteúdo. Cada squad precisa de missão, líder, rotina e entregáveis simples.</p></div></div>
+      <div class="rec"><div><h3>Fortalecer indicação</h3><p>Como quase 10% chegam por amigas, criar mecânicas de convite: “traga uma preta”, embaixadoras por região e cards compartilháveis.</p></div></div>
+      <div class="rec"><div><h3>Testar expansão fora de SP sem perder o centro</h3><p>São Paulo é o núcleo presencial, mas a demanda nacional já existe. Começar com encontros online regionais e lideranças locais voluntárias.</p></div></div>
+    </div>
+  </section>
+  <div class="footer">Observação metodológica: foram analisadas duas planilhas enviadas — formulário principal da comunidade e formulário de voluntariado. Campos duplicados do formulário principal indicam alterações ao longo do tempo; para identidade e consentimento, a leitura consolidou as versões equivalentes das perguntas. Dados pessoais como e-mail e telefone não foram exibidos.</div>
+
+  </div>
+
+  
+  <div id="tab-mercado" class="tab-panel">
+  <section class="manifesto"><p>O espaço proprietário da Entre Pretas está entre pertencimento profundo e geração real de oportunidades.</p><span>Benchmark e modelo de negócio</span></section>
+  
+    <section class="hero">
+      <div class="card">
+        <div class="eyebrow">Mapeamento de mercado · Benchmark estratégico</div>
+        <h1 class="title">Referências para posicionamento e modelo de negócio</h1>
+        <p class="subtitle">Leitura de movimentos nacionais e internacionais em comunidades para mulheres negras, bem-estar, carreira, empreendedorismo e networking. O objetivo é transformar referências em decisões práticas para a Entre Pretas.</p>
+        <div class="meta">
+          <span class="pill">Foco: comunidade + desenvolvimento + pertencimento</span>
+          <span class="pill">Mercado: Brasil + referências globais</span>
+          <span class="pill">Direção: social-first → membership → ecossistema</span>
+        </div>
+      </div>
+      <div class="card">
+        <p class="quote">“O diferencial competitivo não está apenas em reunir mulheres negras, mas em desenhar uma infraestrutura de pertencimento, circulação de oportunidades e cuidado.”</p>
+        <p class="note">A base de pesquisa indica alta demanda por amizade, acolhimento e troca; o benchmark mostra caminhos para monetizar sem perder confiança.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>1. Territórios de referência</h2><p class="lead">O mercado se organiza em cinco territórios principais. A Entre Pretas pode ocupar uma interseção rara: comunidade afetiva + desenvolvimento + cultura + negócios.</p></div>
+      <div class="market-map">
+        <div class="market-card"><small>Comunidade</small><h3>Pertencimento e rede</h3><p>Espaços seguros, grupos, encontros, rituais de integração e conexão entre pares.</p></div>
+        <div class="market-card"><small>Desenvolvimento</small><h3>Carreira e liderança</h3><p>Mentorias, eventos, conteúdo educacional, networking profissional e acesso a oportunidades.</p></div>
+        <div class="market-card"><small>Wellness</small><h3>Cuidado e saúde emocional</h3><p>Rodas, práticas de autocuidado, terapia, respiração, saúde mental e descanso.</p></div>
+        <div class="market-card"><small>Negócios</small><h3>Empreendedorismo negro</h3><p>Aceleração, capacitação, vitrines, parcerias, comercialização e marcas patrocinadoras.</p></div>
+        <div class="market-card"><small>Cultura</small><h3>Representatividade e lifestyle</h3><p>Eventos, experiências, conteúdo, consumo, moda, beleza, arte e agenda cultural.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>2. Benchmark de players e referências</h2><p class="lead">As referências mais fortes não vendem apenas acesso. Elas vendem identidade, avanço, espaço seguro, repertório e pertencimento qualificado.</p></div>
+      <div class="card benchmark-table">
+        <div class="bench-row head"><div>Referência</div><div>Proposta central</div><div>Modelo provável</div><div>Insight para Entre Pretas</div></div>
+        <div class="bench-row"><div><b>ForbesBLK</b>Comunidade global para profissionais, líderes, creators e empreendedores negros.</div><div>Autoridade, eventos exclusivos, educação e networking.</div><div>Comunidade de marca + eventos + conteúdo premium + patrocínio.</div><div>Construir status simbólico: pertencer também deve significar avançar.</div></div>
+        <div class="bench-row"><div><b>Black Women in Asset Management</b>Rede de carreira para mulheres negras no mercado financeiro.</div><div>Conexão entre profissionais e empresas interessadas em diversidade de talentos.</div><div>B2C para profissionais + B2B para empresas parceiras.</div><div>Criar pontes com empresas: talentos, vagas, mentorias e sponsorship.</div></div>
+        <div class="bench-row"><div><b>Black Career Women’s Network</b>Desenvolvimento profissional para mulheres negras.</div><div>Planejamento de carreira, liderança, transição e crescimento.</div><div>Conteúdo, comunidade, programas e serviços profissionais.</div><div>Transformar dores de carreira em trilhas práticas e recorrentes.</div></div>
+        <div class="bench-row"><div><b>Black Girls Breathing</b>Comunidade e prática de saúde emocional para mulheres negras.</div><div>Espaço de cura, respiração, saúde mental e acessibilidade.</div><div>Sessões, comunidade, escala solidária, parcerias e pesquisa.</div><div>Wellness pode ser pilar sensível e de alto valor, desde que conduzido com cuidado.</div></div>
+        <div class="bench-row"><div><b>PretaHub / Feira Preta</b>Ecossistema de empreendedorismo, cultura e negócios negros.</div><div>Aceleração, capacitação, circulação econômica e visibilidade.</div><div>Programas patrocinados, eventos, aceleração, editais e parcerias.</div><div>Para escala, a comunidade precisa virar plataforma de oportunidades.</div></div>
+        <div class="bench-row"><div><b>AfroSaúde</b>Healthtech voltada à saúde da população negra no Brasil.</div><div>Acesso, representatividade profissional e soluções específicas.</div><div>Marketplace/serviços de saúde + B2B.</div><div>Mapear profissionais negras pode virar camada de serviço e confiança.</div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>3. Mapa de posicionamento</h2><p class="lead">A oportunidade está no quadrante superior direito: alta profundidade comunitária com alta geração de valor prático.</p></div>
+      <div class="axis-map card">
+        <div class="axis-label top">Mais desenvolvimento / oportunidade</div>
+        <div class="axis-label bottom">Mais lifestyle / social</div>
+        <div class="axis-label left">Mais amplo</div>
+        <div class="axis-label right">Mais nichado</div>
+        <div class="dot" style="left:24%;top:72%"><b>Agenda cultural</b><span>Eventos, rolês, lifestyle e descoberta.</span></div>
+        <div class="dot" style="left:31%;top:36%"><b>Comunidades profissionais amplas</b><span>Networking, conteúdo e carreira.</span></div>
+        <div class="dot" style="left:73%;top:29%"><b>Redes de carreira negras</b><span>Mentoria, liderança e acesso a empresas.</span></div>
+        <div class="dot" style="left:72%;top:70%"><b>Wellness para mulheres negras</b><span>Cuidado, saúde emocional e espaço seguro.</span></div>
+        <div class="dot prime" style="left:58%;top:49%"><b>Entre Pretas</b><span>Comunidade afetiva com potencial de desenvolvimento, cultura e oportunidades.</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>4. Modelos de negócio possíveis</h2><p class="lead">O melhor caminho é híbrido: uma base gratuita para escala e confiança, uma camada paga para profundidade e uma camada B2B para sustentabilidade.</p></div>
+      <div class="model-grid">
+        <div class="model"><h3>Comunidade gratuita</h3><div class="price">R$0</div><p class="small">Aquisição, pertencimento e crescimento orgânico.</p><ul><li>Grupos abertos com curadoria</li><li>Agenda pública de encontros</li><li>Conteúdo social-first</li><li>Indicações e embaixadoras</li></ul></div>
+        <div class="model"><h3>Clube pago</h3><div class="price">R$29–79/mês</div><p class="small">Recorrência, profundidade e maior senso de compromisso.</p><ul><li>Rodas fechadas</li><li>Mentorias e masterclasses</li><li>Benefícios com marcas parceiras</li><li>Comunidade segmentada por interesse</li></ul></div>
+        <div class="model"><h3>Parcerias B2B</h3><div class="price">Projetos</div><p class="small">Receita de maior ticket sem pressionar a comunidade.</p><ul><li>Patrocínio de eventos</li><li>Pesquisas e reports proprietários</li><li>Employer branding</li><li>Programas com marcas e empresas</li></ul></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>5. Arquitetura recomendada</h2><p class="lead">A comunidade pode evoluir como um ecossistema em camadas: entrada leve, vínculo recorrente, valor pago e monetização institucional.</p></div>
+      <div class="funnel">
+        <div class="funnel-step"><b>01</b><span>Conteúdo de identificação no Instagram/TikTok</span></div>
+        <div class="funnel-step"><b>02</b><span>Entrada em grupo + onboarding de pertencimento</span></div>
+        <div class="funnel-step"><b>03</b><span>Rituais: encontros, rodas, networking e agenda</span></div>
+        <div class="funnel-step"><b>04</b><span>Clube pago com trilhas, benefícios e curadoria</span></div>
+        <div class="funnel-step"><b>05</b><span>B2B: marcas, empresas, reports e programas</span></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>6. Teses de posicionamento</h2><p class="lead">Três territórios de mensagem que podem ser testados em conteúdo, landing page, eventos e pitch comercial.</p></div>
+      <div class="grid-3">
+        <div class="insight"><h3>Comunidade para pertencer</h3><p>“Um espaço para mulheres pretas se reconhecerem, criarem vínculos e viverem experiências com segurança.”</p></div>
+        <div class="insight"><h3>Rede para avançar</h3><p>“Uma rede que transforma conexão em repertório, oportunidades, carreira, negócios e autonomia.”</p></div>
+        <div class="insight"><h3>Ecossistema para circular valor</h3><p>“Uma plataforma que conecta mulheres negras, marcas, talentos, serviços, cultura e mercado.”</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>7. Business model canvas sintético</h2><p class="lead">Hipótese de modelo para guiar próximos testes sem engessar a comunidade.</p></div>
+      <div class="canvas-grid">
+        <div class="canvas-card"><h3>Público</h3><p>Mulheres negras 19–44, com foco inicial em SP, interessadas em amizade, acolhimento, troca e desenvolvimento.</p></div>
+        <div class="canvas-card"><h3>Proposta</h3><p>Pertencimento qualificado, experiências seguras, conexão entre pares e acesso a oportunidades.</p></div>
+        <div class="canvas-card"><h3>Canais</h3><p>Instagram, TikTok, WhatsApp, eventos presenciais, embaixadoras e parcerias.</p></div>
+        <div class="canvas-card"><h3>Receita</h3><p>Membership, eventos, patrocínios, programas B2B, reports e parcerias com marcas.</p></div>
+        <div class="canvas-card"><h3>Ativos</h3><p>Base de dados, voluntárias, agenda, narrativas, comunidade, confiança e curadoria cultural.</p></div>
+        <div class="canvas-card"><h3>Operação</h3><p>Squads de voluntárias, calendário editorial, calendário de eventos e CRM comunitário.</p></div>
+        <div class="canvas-card"><h3>Métricas</h3><p>Ativação, presença em eventos, retenção nos grupos, indicações, conversão para pago e NPS.</p></div>
+        <div class="canvas-card"><h3>Riscos</h3><p>Extrair valor sem retribuição, excesso de dependência de voluntárias, baixa moderação e diluição de propósito.</p></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>8. Próximos testes recomendados</h2><p class="lead">Antes de escalar, validar disposição de pagamento, rituais de engajamento e proposta B2B.</p></div>
+      <div class="card recommendations">
+        <div class="rec"><div><h3>Landing page do Clube Entre Pretas</h3><p>Testar 3 propostas: pertencimento, avanço profissional e experiências. Medir cliques, inscrições e intenção de pagamento.</p></div></div>
+        <div class="rec"><div><h3>Piloto de assinatura por 60 dias</h3><p>Grupo fechado com 2 encontros/mês, 1 mentoria, benefícios e rituais semanais. Meta: validar retenção e valor percebido.</p></div></div>
+        <div class="rec"><div><h3>Media kit para marcas</h3><p>Transformar os dados da pesquisa em proposta comercial para patrocínio de eventos, conteúdo e reports.</p></div></div>
+        <div class="rec"><div><h3>Mapa de profissionais e serviços</h3><p>Criar diretório opt-in de psicólogas, terapeutas, produtoras, designers, advogadas, empreendedoras e prestadoras negras.</p></div></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Fontes consultadas</h2><p class="lead">Referências usadas para inspirar o benchmark e a leitura estratégica.</p></div>
+      <div class="source-list">
+        <a href="https://www.forbes.com/forbesblk/" target="_blank">ForbesBLK — comunidade para profissionais, líderes e creators negros</a>
+        <a href="https://bwam.network/" target="_blank">Black Women in Asset Management — rede de carreira e empresas</a>
+        <a href="https://bcwnetwork.com/" target="_blank">Black Career Women’s Network — desenvolvimento profissional</a>
+        <a href="https://blackgirlsbreathing.com/about/" target="_blank">Black Girls Breathing — wellness e saúde emocional</a>
+        <a href="https://feirapreta.com.br/afrolab-2/" target="_blank">Feira Preta CRIA / AfroLab — aceleração de empreendedores negros</a>
+        <a href="https://www.nesst.org/afrosaude" target="_blank">AfroSaúde — healthtech para população negra no Brasil</a>
+        <a href="https://agenciasebrae.com.br/dados/empreendedoras-negras-no-brasil-faturam-quase-60-menos-que-homens-brancos-aponta-sebrae/" target="_blank">Sebrae — dados sobre empreendedoras negras no Brasil</a>
+        <a href="https://www.nbwn.org/" target="_blank">National Black Women’s Network — fóruns e networking</a>
+      </div>
+    </section>
+  </div>
+
+</main>
+<script>
+  const buttons = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.tab-panel');
+  buttons.forEach(btn => btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+    buttons.forEach(b => b.classList.toggle('active', b === btn));
+    panels.forEach(p => p.classList.toggle('active', p.id === `tab-${target}`));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }));
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: .08 });
+  document.querySelectorAll('.card,.insight,.persona,.step,.model,.market-card,.canvas-card').forEach(el => observer.observe(el));
+</script>
+<style>
+  .card,.insight,.persona,.step,.model,.market-card,.canvas-card{opacity:0;transform:translateY(14px);transition:opacity .55s ease, transform .55s ease}
+  .card.visible,.insight.visible,.persona.visible,.step.visible,.model.visible,.market-card.visible,.canvas-card.visible{opacity:1;transform:none}
+</style>
+</body>
+</html>
